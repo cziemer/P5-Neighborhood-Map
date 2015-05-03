@@ -1,46 +1,44 @@
-function initialize() {
-	var mapOptions = {
+function setMarkers(map, name, lat, long, z){
+    var myLatLng = new google.maps.LatLng(lat, long);
+    var marker = new google.maps.Marker({
+        position: myLatLng,
+        map: map,
+        title: name,
+        zIndex: z
+    });
+}
+    
+function AppViewModel() {
+    var self = this;
+    var loc;
+    
+    //Set variables for the map
+    var mapOptions = {
 		zoom: 12,
 		center: new google.maps.LatLng(28.4117863, -81.5131844)
 	};
 	var map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
 	
-	setMarkers(map, attractions);
+    self.places = ko.observableArray([
+    	{ name: 'Magic Kingdom Park', lat: 28.417663, long: -81.581212, zoom: 11},
+		{ name: 'EPCOT', lat: 28.374694, long: -81.549404, zoom: 11},
+		{ name: 'Disney Hollywood Studios', lat: 28.357529, long: -81.558271, zoom: 11},
+		{ name: 'Disney Animal Kingdom', lat: 28.359719, long: -81.591313, zoom: 11},
+		{ name: 'Downtown Disney', lat: 28.370174, long: -81.521017, zoom: 11},
+		{ name: 'Universal Orlando Resort', lat: 28.474321, long: -81.467819, zoom: 11},
+		{ name: 'Universal Islands of Adventure', lat: 28.47114, long: -81.471565, zoom: 11},
+		{ name: 'Universal CityWalk', lat: 28.4731495, long: -81.465465, zoom: 11},
+		{ name: 'Seaworld Orlando', lat: 28.411456, long: -81.461705, zoom: 11},
+		{ name: 'Fun Spot America', lat: 28.465445, long: -81.455462, zoom: 11},
+		{ name: 'Wet n Wild Orlando', lat: 28.461565, long: -81.465523, zoom: 11},
+		{ name: 'Disney Typhoon Lagoon', lat: 28.365838, long: -81.529606, zoom: 11},
+		{ name: 'Disney Blizzard Beach', lat: 28.351849, long: -81.575296, zoom: 11}
+    ]);
+    
+    for (var i = 0; i < self.places().length; i++) {
+	    loc = self.places()[i];
+	    setMarkers(map, loc.name, loc.lat, loc.long, loc.z)
+    }
 }
 
-/**
- * Data for the markers consisting of a name, a LatLng and a zIndex for
- * the order in which these markers should display on top of each
- * other.
- */
-var attractions = [
-  ['Magic Kingdom Park', 28.417663, -81.581212, 11],
-  ['EPCOT', 28.374694, -81.549404, 11],
-  ['Disney Hollywood Studios', 28.357529, -81.558271, 11],
-  ['Disney Animal Kingdom', 28.359719, -81.591313, 11],
-  ['Downtown Disney', 28.370174, -81.521017, 11],
-  ['Universal Orlando Resort', 28.474321, -81.467819, 11],
-  ['Universal Islands of Adventure', 28.47114, -81.471565, 11],
-  ['Universal CityWalk', 28.4731495, -81.465465, 11],
-  ['Seaworld Orlando', 28.411456, -81.461705, 11],
-  ['Fun Spot America', 28.465445, -81.455462, 11],
-  ['Wet n Wild Orlando', 28.461565, -81.465523, 11],
-  ['Disney Typhoon Lagoon', 28.365838, -81.529606, 11],
-  ['Disney Blizzard Beach', 28.351849, -81.575296, 11]
-];
-
-function setMarkers(map, locations) {
-  // Add markers to the map
-  for (var i = 0; i < attractions.length; i++) {
-    var park = attractions[i];
-    var myLatLng = new google.maps.LatLng(park[1], park[2]);
-    var marker = new google.maps.Marker({
-        position: myLatLng,
-        map: map,
-        title: park[0],
-        zIndex: park[3]
-    });
-  }
-}
-
-google.maps.event.addDomListener(window, 'load', initialize);
+ko.applyBindings(new AppViewModel());
