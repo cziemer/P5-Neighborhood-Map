@@ -13,12 +13,15 @@
 	<body>
 		<div id="map-canvas"></div>
 		<div id="controlBox">
-			<h4>Places</h4>
-			<ul data-bind="foreach: places">
-			    <li>
-			        <span data-bind="text: name"> </span>
-			    </li>
-			</ul>
+			<center><h3>Orlando Attractions</h3></center><hr>
+			Search Attractions: <input data-bind="textInput: searchTerm"><hr>
+			<table>
+				<tbody data-bind="foreach: places">
+					<tr>
+						<td data-bind="text: name"></td>
+					</tr>
+				</tbody>
+			</table>
 		</div>
 		<script src="js/app.js"></script>
 	</body>
