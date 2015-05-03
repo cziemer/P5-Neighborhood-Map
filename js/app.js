@@ -23,6 +23,14 @@ function createContent(name) {
 	return contentString;
 }
 
+function clearMarkers(markers){
+	for (var i = 0; i < markers.length; i++) {
+        markers[i].setMap(null);
+    }
+    markers = [];
+    return markers;
+}
+
 function setMarkers(map, name, lat, long, z){
 	var infoWindow;
     var myLatLng = new google.maps.LatLng(lat, long);
@@ -39,6 +47,7 @@ function setMarkers(map, name, lat, long, z){
 		infowindow.setContent(createContent(name));
 		infowindow.open(map, marker);
 	});
+	return marker;
 }
     
 var viewModel = function () {
@@ -46,6 +55,7 @@ var viewModel = function () {
     var loc;
     self.filteredArray = ko.observableArray();
     self.filter = ko.observable('');
+    self.markers = [];
     
     //Set variables for the map
     var mapOptions = {
@@ -54,21 +64,19 @@ var viewModel = function () {
 	};
 	var map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
 	
-	for (var i = 0; i < model.attractions.length; i++) {
-		loc = model.attractions[i];
-		//self.places.push(loc);
-		setMarkers(map, loc.name, loc.lat, loc.long, loc.z);
-	}
-	
 	self.filteredArray = ko.computed(function() {
 		var filter = self.filter().toLowerCase();
 		var tmpArray = [];
 		for (var i = 0; i < model.attractions.length; i++) {
 			loc = model.attractions[i];
-			
 			if (loc.name.toLowerCase().indexOf(filter) >= 0) {
 				tmpArray.push(loc);
 			}
+		}
+		clearMarkers(self.markers);
+		for (var i = 0; i < tmpArray.length; i++) {
+			loc = tmpArray[i];
+			self.markers.push(setMarkers(map, loc.name, loc.lat, loc.long, loc.z));
 		}
 		return tmpArray;
     });
