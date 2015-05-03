@@ -14,9 +14,9 @@
 		<div id="map-canvas"></div>
 		<div id="controlBox">
 			<center><h3>Orlando Attractions</h3></center><hr>
-			Search Attractions: <input data-bind="textInput: searchTerm"><hr>
+			<input placeholder="Search" data-bind="value: filter, valueUpdate: 'afterkeydown'">
 			<table>
-				<tbody data-bind="foreach: places">
+				<tbody data-bind="foreach: filteredArray">
 					<tr>
 						<td data-bind="text: name"></td>
 					</tr>

@@ -22,32 +22,31 @@ function createContent(name) {
 	
 	return contentString;
 }
+
+function setMarkers(map, name, lat, long, z){
+	var infoWindow;
+    var myLatLng = new google.maps.LatLng(lat, long);
+    var marker = new google.maps.Marker({
+        position: myLatLng,
+        map: map,
+        title: name,
+        zIndex: z
+    });
     
-function AppViewModel() {
+    infowindow = new google.maps.InfoWindow();
+    
+	google.maps.event.addListener(marker, 'click', function() {
+		infowindow.setContent(createContent(name));
+		infowindow.open(map, marker);
+	});
+}
+    
+var viewModel = function () {
     var self = this;
     var loc;
-    self.places = ko.observableArray();
-    self.searchTerm = ko.observable('');
+    self.filteredArray = ko.observableArray();
+    self.filter = ko.observable('');
     
-    function setMarkers(map, name, lat, long, z){
-		
-		var infoWindow;
-	    var myLatLng = new google.maps.LatLng(lat, long);
-	    var marker = new google.maps.Marker({
-	        position: myLatLng,
-	        map: map,
-	        title: name,
-	        zIndex: z
-	    });
-	    
-	    infowindow = new google.maps.InfoWindow();
-	    
-		google.maps.event.addListener(marker, 'click', function() {
-			infowindow.setContent(createContent(name));
-			infowindow.open(map, marker);
-		});
-	}
-
     //Set variables for the map
     var mapOptions = {
 		zoom: 12,
@@ -57,9 +56,21 @@ function AppViewModel() {
 	
 	for (var i = 0; i < model.attractions.length; i++) {
 		loc = model.attractions[i];
-		self.places.push(loc);
+		//self.places.push(loc);
 		setMarkers(map, loc.name, loc.lat, loc.long, loc.z);
 	}
+	
+	self.filteredArray = ko.computed(function() {
+		var filter = self.filter().toLowerCase();
+		var tmpArray = [];
+		for (var i = 0; i < model.attractions.length; i++) {
+			loc = model.attractions[i];
+			
+			if (loc.name.toLowerCase().indexOf(filter) >= 0) {
+				tmpArray.push(loc);
+			}
+		}
+		return tmpArray;
+    });
 }
-
-ko.applyBindings(new AppViewModel());
+ko.applyBindings(new viewModel());
