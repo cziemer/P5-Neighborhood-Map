@@ -1,17 +1,34 @@
-function setMarkers(map, name, lat, long, z){
-    var myLatLng = new google.maps.LatLng(lat, long);
-    var marker = new google.maps.Marker({
-        position: myLatLng,
-        map: map,
-        title: name,
-        zIndex: z
-    });
+function createContent(name) {
+	var contentString;
+	contentString = "<h2>" + name + "</h2><hr>Some info here";
+	
+	return contentString;
 }
     
 function AppViewModel() {
     var self = this;
     var loc;
     
+    
+    function setMarkers(map, name, lat, long, z){
+		
+		var infoWindow;
+	    var myLatLng = new google.maps.LatLng(lat, long);
+	    var marker = new google.maps.Marker({
+	        position: myLatLng,
+	        map: map,
+	        title: name,
+	        zIndex: z
+	    });
+	    
+	    infowindow = new google.maps.InfoWindow();
+	    
+		google.maps.event.addListener(marker, 'click', function() {
+			infowindow.setContent(createContent(name));
+			infowindow.open(map, marker);
+		});
+	}
+
     //Set variables for the map
     var mapOptions = {
 		zoom: 12,
