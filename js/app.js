@@ -46,6 +46,7 @@ function setMarkers(map, name, lat, long, z){
 	google.maps.event.addListener(marker, 'click', function() {
 		infowindow.setContent(createContent(name));
 		infowindow.open(map, marker);
+		map.panTo(marker.position);
 	});
 	return marker;
 }
@@ -73,12 +74,28 @@ var viewModel = function () {
 				tmpArray.push(loc);
 			}
 		}
-		clearMarkers(self.markers);
+		self.markers = clearMarkers(self.markers);
 		for (var i = 0; i < tmpArray.length; i++) {
 			loc = tmpArray[i];
 			self.markers.push(setMarkers(map, loc.name, loc.lat, loc.long, loc.z));
 		}
 		return tmpArray;
     });
+    
+    // trigger click event to markers when list item is clicked
+	self.clicked = function(place) {
+		var clickedPlace = place.name.toLowerCase();
+		var loc;
+		//console.log(self.filteredArray()[1]);
+		for (var i = 0; i < self.filteredArray().length; i++) {
+			loc = self.filteredArray()[i].name.toLowerCase();
+			if (clickedPlace === loc) {
+				console.log(clickedPlace);
+				console.log(loc);
+				console.log(self.markers.length);
+				google.maps.event.trigger(self.markers[i], 'click');
+			}
+		}
+	};
 }
 ko.applyBindings(new viewModel());
