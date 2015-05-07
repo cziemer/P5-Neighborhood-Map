@@ -18,7 +18,6 @@ var model={
 		{ name: 'ESPN Wide World of Sports', lat: 28.337806, long: -81.551746, zoom: 11, fourID: '4b802c2bf964a520185930e3'},
 		{ name: 'Wonderworks', lat: 28.433721, long: -81.471739, zoom: 11, fourID: '4b058693f964a520916622e3'},
 		{ name: 'Holy Land Experience', lat: 28.495742, long: -81.432944, zoom: 11, fourID: '4b6de9eff964a520629b2ce3'}
-		
 	]
 };
 
@@ -27,16 +26,19 @@ function buildContent(map, marker, fourID) {
 	var address;
 	var phone;
 	var desc;
-	var stat;
+	var url;
+	var tmp;
+	var photoArray = [];
+	var a;
 	
 	var fsURL = "https://api.foursquare.com/v2/venues/" + fourID + "?client_id=1GDZWF2EXB4AHKVRWXSFXA5REWFR2KHC2TY3PTDW1IVSHORE&client_secret=EMPTPKLVHRRX2DYVHU4M3KUIDJ5YBJJVUQ05GSOUXF555KQN&v=20150506";
 	$.getJSON(fsURL, function(data) {
-		name = data.response.venue.name;
-		address = data.response.venue.location.formattedAddress;
-		phone = data.response.venue.contact.formattedPhone;
-		desc = data.response.venue.description;
-		url = data.response.venue.url;
-		
+		a = data.response.venue;
+		name = a.name;
+		address = a.location.formattedAddress;
+		phone = a.contact.formattedPhone;
+		desc = a.description;
+		url = a.url;
 		infoContent = "<h2>" + name + "</h2>";
 		if (address != undefined) {
 			infoContent += address + "<br>";
@@ -45,12 +47,14 @@ function buildContent(map, marker, fourID) {
 			infoContent += phone + "<hr>";
 		}
 		if (url != undefined) {
-			infoContent += "URL: <a href='" + url + "'>" + url + "</a><br>";
+			infoContent += "URL: <a href='" + url + "' target='_blank'>" + url + "</a><br>";
 		}
 		if(desc != undefined) {
 			infoContent += "<p>" + desc + "</p>";
 		}
-		
+		for (var i = 0; i < 6; i++) {
+			infoContent += "<img src='" + a.photos.groups[0].items[i].prefix + "152x152" + a.photos.groups[0].items[i].suffix + "'>";
+		}
 		addMarkerListener(map, marker, fourID, infoContent)
 	});
 }

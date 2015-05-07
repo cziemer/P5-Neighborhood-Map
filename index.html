@@ -10,23 +10,9 @@
 		<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?v=3.exp"></script>
 		<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/knockout/3.3.0/knockout-min.js"></script>
 		<script type="text/javascript" src="https://code.jquery.com/jquery-1.10.2.js"></script>
-		<style>
-  img {
-    height: 100px;
-    float: left;
-  }
-  </style>
 	</head>
 	<body>
-		<div id="infoWindow" style="display:none">
-			<div id="infoWindowContent">
-				<span data-bind="text: infoWindowContent"></span>
-			</div>
-		</div>
-		
-		<div id="map-canvas">
-			
-		</div>
+		<div id="map-canvas"></div>
 		<div id="controlBox">
 			<center><h3>Orlando Attractions</h3></center><hr>
 			<input placeholder="Search" data-bind="value: filter, valueUpdate: 'afterkeydown'">
