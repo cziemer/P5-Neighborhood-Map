@@ -18,13 +18,10 @@
   </style>
 	</head>
 	<body>
-		<div id="infoWindow" class="hide">
-			<!--<div id="infoWindowContent">
-				<h2 data-bind="text: name"></h2>
-				<p data-bind="text: contact"></p>
-				<p data-bind="text: address"></p>
-				<p>Rating: <span data-bind="text: rating"></span></p>
-			</div>-->
+		<div id="infoWindow" style="display:none">
+			<div id="infoWindowContent">
+				<span data-bind="text: infoWindowContent"></span>
+			</div>
 		</div>
 		
 		<div id="map-canvas">
@@ -43,23 +40,5 @@
 			<div id="images"></div>
 		</div>
 		<script src="js/app.js"></script>
-		<script>
-			(function() {
-			  var flickerAPI = "http://api.flickr.com/services/feeds/photos_public.gne?jsoncallback=?";
-			  $.getJSON( flickerAPI, {
-			    tags: "EPCOT",
-			    tagmode: "any",
-			    format: "json"
-			  })
-			    .done(function( data ) {
-			      $.each( data.items, function( i, item ) {
-			        $( "<img>" ).attr( "src", item.media.m ).appendTo( "#images" );
-			        if ( i === 3 ) {
-			          return false;
-			        }
-			      });
-			    });
-			})();
-		</script>
 	</body>
 </html>
