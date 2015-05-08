@@ -1,3 +1,6 @@
+/*
+	* Model stores the data needed by the View to set Map Marker locations
+*/
 var model={
 	attractions: [
 		{ name: 'Magic Kingdom Park', lat: 28.417663, long: -81.581212, zoom: 11, fourID: '4b11d311f964a520758523e3'},
@@ -21,6 +24,12 @@ var model={
 	]
 };
 
+/*
+	* Builds the HTML for the map InfoWindow
+	* @param {object} map is the Google Maps object
+	* @param {object} marker is the Google Maps Marker obect to build the infoWindow for
+	* @param {string} fourID is the FourSquare ID for the location being built in infoWindow
+*/
 function buildContent(map, marker, fourID) {
 	var name;
 	var address;
@@ -31,9 +40,10 @@ function buildContent(map, marker, fourID) {
 	var photoArray = [];
 	var a;
 	var FSReqTimeout = setTimeout(function() {
-	   	$iw-container.text("Failed to get FourSquare resources");
-   	},8000);
+	   		$iw-container.text("Failed to get FourSquare resources");
+   		},8000);
    	
+   	//build the FourSquare URL to get data
 	var fsURL = "https://api.foursquare.com/v2/venues/" + fourID + "?client_id=1GDZWF2EXB4AHKVRWXSFXA5REWFR2KHC2TY3PTDW1IVSHORE&client_secret=EMPTPKLVHRRX2DYVHU4M3KUIDJ5YBJJVUQ05GSOUXF555KQN&v=20150506";
 	$.getJSON(fsURL, function(data) {
 		a = data.response.venue;
@@ -59,16 +69,20 @@ function buildContent(map, marker, fourID) {
 			infoContent += "<img src='" + a.photos.groups[0].items[i].prefix + "152x152" + a.photos.groups[0].items[i].suffix + "'>";
 		}
 		infoContent += "</div>";
+		//Build the Marker by calling the function
 		addMarkerListener(map, marker, fourID, infoContent);
-		
 		clearTimeout(FSReqTimeout);
 	}).error(function(e){
+		//Error retrieving FourSquare Data, build the marker reflecting that
 		addMarkerListener(map, marker, fourID, "Sorry, Unable to load FourSquare Data");
-		
-		
 	});
 }
 
+/*
+	* Clears all current markers from the map object
+	* @param {array} markers is an array of all current markers in the map
+	* @return {array} markers is sent back as an empty array of markers
+*/
 function clearMarkers(markers){
 	for (var i = 0; i < markers.length; i++) {
         markers[i].setMap(null);
@@ -77,6 +91,13 @@ function clearMarkers(markers){
     return markers;
 }
 
+/*
+	* Adds a marker with needed infoWindow to the Google Maps object
+	* @param {object} map is the Google Maps object
+	* @param {object} marker is the Google Maps Marker obect to build the infoWindow for
+	* @param {string} fourID is the FourSquare ID for the location being built in infoWindow
+	* @param {string} infoContent is the HTML for the infoWindow build in the calling function
+*/
 function addMarkerListener(map, marker, fourID, infoContent) {
 	var infoWindow;
 	infowindow = new google.maps.InfoWindow();
@@ -88,54 +109,63 @@ function addMarkerListener(map, marker, fourID, infoContent) {
 	});
 	
 	/*
- * The google.maps.event.addListener() event waits for
- * the creation of the infowindow HTML structure 'domready'
- * and before the opening of the infowindow defined styles
- * are applied.
- */
-google.maps.event.addListener(infowindow, 'domready', function() {
+	* The google.maps.event.addListener() event waits for
+	* the creation of the infowindow HTML structure 'domready'
+	* and before the opening of the infowindow defined styles
+	* are applied.
+	* Credit to http://en.marnoto.com/2014/09/5-formas-de-personalizar-infowindow.html
+	*/
+	google.maps.event.addListener(infowindow, 'domready', function() {
 
-   // Reference to the DIV which receives the contents of the infowindow using jQuery
-   var iwOuter = $('.gm-style-iw');
-
-   /* The DIV we want to change is above the .gm-style-iw DIV.
-    * So, we use jQuery and create a iwBackground variable,
-    * and took advantage of the existing reference to .gm-style-iw for the previous DIV with .prev().
-    */
-   var iwBackground = iwOuter.prev();
-
-   // Remove the background shadow DIV
-   iwBackground.children(':nth-child(2)').css({'display' : 'none'});
-
-   // Remove the white background DIV
-   iwBackground.children(':nth-child(4)').css({'display' : 'none'});
-   
-   // Taking advantage of the already established reference to
-	// div .gm-style-iw with iwOuter variable.
-	// You must set a new variable iwCloseBtn.
-	// Using the .next() method of JQuery you reference the following div to .gm-style-iw.
-	// Is this div that groups the close button elements.
-	var iwCloseBtn = iwOuter.next();
-	
-	// Apply the desired effect to the close button
-	iwCloseBtn.css({
-	  opacity: '1', // by default the close button has an opacity of 0.7
-	  right: '38px', top: '3px', // button repositioning
-	  border: '7px solid #48b5e9', // increasing button border and new color
-	  'border-radius': '13px', // circular effect
-	  'box-shadow': '0 0 5px #3990B9' // 3D effect to highlight the button
-	  });
-	
-	// The API automatically applies 0.7 opacity to the button after the mouseout event.
-	// This function reverses this event to the desired value.
-	iwCloseBtn.mouseout(function(){
-	  $(this).css({opacity: '1'});
+		// Reference to the DIV which receives the contents of the infowindow using jQuery
+		var iwOuter = $('.gm-style-iw');
+		
+		/* The DIV we want to change is above the .gm-style-iw DIV.
+		* So, we use jQuery and create a iwBackground variable,
+		* and took advantage of the existing reference to .gm-style-iw for the previous DIV with .prev().
+		*/
+		var iwBackground = iwOuter.prev();
+		
+		// Remove the background shadow DIV
+		iwBackground.children(':nth-child(2)').css({'display' : 'none'});
+		
+		// Remove the white background DIV
+		iwBackground.children(':nth-child(4)').css({'display' : 'none'});
+		
+		// Taking advantage of the already established reference to
+		// div .gm-style-iw with iwOuter variable.
+		// You must set a new variable iwCloseBtn.
+		// Using the .next() method of JQuery you reference the following div to .gm-style-iw.
+		// Is this div that groups the close button elements.
+		var iwCloseBtn = iwOuter.next();
+		
+		// Apply the desired effect to the close button
+		iwCloseBtn.css({
+			opacity: '1', // by default the close button has an opacity of 0.7
+			right: '38px', top: '3px', // button repositioning
+			border: '7px solid #48b5e9', // increasing button border and new color
+			'border-radius': '13px', // circular effect
+			'box-shadow': '0 0 5px #3990B9' // 3D effect to highlight the button
+		});
+		
+		// The API automatically applies 0.7 opacity to the button after the mouseout event.
+		// This function reverses this event to the desired value.
+		iwCloseBtn.mouseout(function(){
+			$(this).css({opacity: '1'});
+		});
 	});
-
-});
-	
 }
 
+/*
+	* Sets all required markers for the Google Maps object
+	* @param {object} map is the Google Maps object
+	* @param {string} name is the Name for a marker
+	* @param {long} lat is the latitude for the marker on the map object
+	* @param {long} long is the longitude for the marker on the map object
+	* @param {integer} z is the zoom level on the map object for the marker
+	* @param {string} fourID is the FourSquare ID for the location being built in infoWindow
+	* @return {object} returns the marker object created	
+*/
 function setMarkers(map, name, lat, long, z, fourID){
     var myLatLng = new google.maps.LatLng(lat, long);
     var marker = new google.maps.Marker({
@@ -144,6 +174,7 @@ function setMarkers(map, name, lat, long, z, fourID){
         title: name,
         zIndex: z
     });
+    //build the infoWindow & content inside
     buildContent(map, marker, fourID);
 	return marker;
 }
@@ -163,11 +194,14 @@ var viewModel = function () {
 		zoom: 12,
 		center: new google.maps.LatLng(28.4117863, -81.5131844)
 	};
+	//Create the map object
 	var map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
 	
+	//The list of places as a result of the search - as an array
 	self.filteredArray = ko.computed(function() {
 		var filter = self.filter().toLowerCase();
 		var tmpArray = [];
+		//Check the search filter against our attractions list in the model
 		for (var i = 0; i < model.attractions.length; i++) {
 			loc = model.attractions[i];
 			if (loc.name.toLowerCase().indexOf(filter) >= 0) {
@@ -175,6 +209,7 @@ var viewModel = function () {
 			}
 		}
 		self.markers = clearMarkers(self.markers);
+		//Set markers for each place that matches the search results
 		for (var i = 0; i < tmpArray.length; i++) {
 			loc = tmpArray[i];
 			self.markers.push(setMarkers(map, loc.name, loc.lat, loc.long, loc.z, loc.fourID));
