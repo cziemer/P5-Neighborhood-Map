@@ -11,3 +11,9 @@ KnockoutJS documentation (http://knockoutjs.com/documentation/introduction.html)
 Foursquare API (https://developer.foursquare.com/docs/venues/venues)
 
 Customizing the Google Maps InfoWindow (http://en.marnoto.com/2014/09/5-formas-de-personalizar-infowindow.html)
+
+HTML Validator (passed) (https://validator.w3.org/)
+
+CSS Validator (0 errors) (http://csslint.net/)
+
+JS Validator () ()

@@ -1,8 +1,10 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 	<head>
 		<meta charset="utf-8">
-	    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+	    <meta name="viewport" content="width=device-width, initial-scale=1">
+	    <meta name="description" content="Map of Orlando Area Attractions">
+		<meta name="author" content="Chris Ziemer">
 		<title>Orlando Attractions Map</title>
 		<meta name="viewport" content="initial-scale=1.0, user-scalable=no">
 		<meta charset="utf-8">
@@ -14,7 +16,7 @@
 	<body>
 		<div id="map-canvas"></div>
 		<div id="controlBox">
-			<center><h3>Orlando Attractions</h3></center><hr>
+			<h3>Orlando Attractions</h3><hr>
 			<input placeholder="Search" data-bind="value: filter, valueUpdate: 'afterkeydown'">
 			<table>
 				<tbody data-bind="foreach: filteredArray">
