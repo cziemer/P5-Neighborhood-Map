@@ -9,3 +9,5 @@ jQuery getJSON (http://api.jquery.com/jquery.getjson/)
 KnockoutJS documentation (http://knockoutjs.com/documentation/introduction.html)
 
 Foursquare API (https://developer.foursquare.com/docs/venues/venues)
+
+Customizing the Google Maps InfoWindow (http://en.marnoto.com/2014/09/5-formas-de-personalizar-infowindow.html)

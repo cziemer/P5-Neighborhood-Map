@@ -30,7 +30,10 @@ function buildContent(map, marker, fourID) {
 	var tmp;
 	var photoArray = [];
 	var a;
-	
+	var FSReqTimeout = setTimeout(function() {
+	   	$iw-container.text("Failed to get FourSquare resources");
+   	},8000);
+   	
 	var fsURL = "https://api.foursquare.com/v2/venues/" + fourID + "?client_id=1GDZWF2EXB4AHKVRWXSFXA5REWFR2KHC2TY3PTDW1IVSHORE&client_secret=EMPTPKLVHRRX2DYVHU4M3KUIDJ5YBJJVUQ05GSOUXF555KQN&v=20150506";
 	$.getJSON(fsURL, function(data) {
 		a = data.response.venue;
@@ -39,12 +42,12 @@ function buildContent(map, marker, fourID) {
 		phone = a.contact.formattedPhone;
 		desc = a.description;
 		url = a.url;
-		infoContent = "<h2>" + name + "</h2>";
+		infoContent = "<div id='iw-container'><h2 class='iw-title'>" + name + "</h2>";
 		if (address != undefined) {
 			infoContent += address + "<br>";
 		}
 		if (phone != undefined) {
-			infoContent += phone + "<hr>";
+			infoContent += phone + "<br>";
 		}
 		if (url != undefined) {
 			infoContent += "URL: <a href='" + url + "' target='_blank'>" + url + "</a><br>";
@@ -55,7 +58,14 @@ function buildContent(map, marker, fourID) {
 		for (var i = 0; i < 6; i++) {
 			infoContent += "<img src='" + a.photos.groups[0].items[i].prefix + "152x152" + a.photos.groups[0].items[i].suffix + "'>";
 		}
-		addMarkerListener(map, marker, fourID, infoContent)
+		infoContent += "</div>";
+		addMarkerListener(map, marker, fourID, infoContent);
+		
+		clearTimeout(FSReqTimeout);
+	}).error(function(e){
+		addMarkerListener(map, marker, fourID, "Sorry, Unable to load FourSquare Data");
+		
+		
 	});
 }
 
@@ -77,12 +87,59 @@ function addMarkerListener(map, marker, fourID, infoContent) {
 		map.panTo(marker.position);
 	});
 	
+	/*
+ * The google.maps.event.addListener() event waits for
+ * the creation of the infowindow HTML structure 'domready'
+ * and before the opening of the infowindow defined styles
+ * are applied.
+ */
+google.maps.event.addListener(infowindow, 'domready', function() {
+
+   // Reference to the DIV which receives the contents of the infowindow using jQuery
+   var iwOuter = $('.gm-style-iw');
+
+   /* The DIV we want to change is above the .gm-style-iw DIV.
+    * So, we use jQuery and create a iwBackground variable,
+    * and took advantage of the existing reference to .gm-style-iw for the previous DIV with .prev().
+    */
+   var iwBackground = iwOuter.prev();
+
+   // Remove the background shadow DIV
+   iwBackground.children(':nth-child(2)').css({'display' : 'none'});
+
+   // Remove the white background DIV
+   iwBackground.children(':nth-child(4)').css({'display' : 'none'});
+   
+   // Taking advantage of the already established reference to
+	// div .gm-style-iw with iwOuter variable.
+	// You must set a new variable iwCloseBtn.
+	// Using the .next() method of JQuery you reference the following div to .gm-style-iw.
+	// Is this div that groups the close button elements.
+	var iwCloseBtn = iwOuter.next();
+	
+	// Apply the desired effect to the close button
+	iwCloseBtn.css({
+	  opacity: '1', // by default the close button has an opacity of 0.7
+	  right: '38px', top: '3px', // button repositioning
+	  border: '7px solid #48b5e9', // increasing button border and new color
+	  'border-radius': '13px', // circular effect
+	  'box-shadow': '0 0 5px #3990B9' // 3D effect to highlight the button
+	  });
+	
+	// The API automatically applies 0.7 opacity to the button after the mouseout event.
+	// This function reverses this event to the desired value.
+	iwCloseBtn.mouseout(function(){
+	  $(this).css({opacity: '1'});
+	});
+
+});
+	
 }
 
 function setMarkers(map, name, lat, long, z, fourID){
     var myLatLng = new google.maps.LatLng(lat, long);
     var marker = new google.maps.Marker({
-        position: myLatLng,
+	    position: myLatLng,
         map: map,
         title: name,
         zIndex: z
