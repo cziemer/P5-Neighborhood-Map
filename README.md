@@ -3,7 +3,7 @@
 Project Overview (as assigned): You will develop a single page application featuring a map of your neighborhood or a neighborhood you would like to visit. 
 You will then add additional functionality to this map including highlighted locations, third-party data about those locations and various ways to browse the content.
 
-Since I live just outside Orlando, FL (Vacation Capitasl of the World), I decided to have my map show the most popular attractions in the area.
+Since I live just outside Orlando, FL (Vacation Capital of the World), I decided to have my map show the most popular attractions in the area.
 
 To load and use:
 
